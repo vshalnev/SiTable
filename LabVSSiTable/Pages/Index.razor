@@ -1,0 +1,370 @@
+﻿@page "/"
+@using Data
+@using System.IO
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.AspNetCore.Hosting
+
+<DxTabs>
+    <DxTabPage Text="В работе">
+        <div>
+            <DxDataGrid Data="DataList.dataLists" PageSize="30" @ref="@_ref"
+                        RowInsertingAsync="onRowInserting"
+                        RowUpdatingAsync="onRowUpdating"
+                        RowRemovingAsync="onRowRemoving">
+                <Columns>
+                    <DxDataGridCommandColumn Width="150px"></DxDataGridCommandColumn>
+                    <DxDataGridColumn Field="@nameof(Data.Customer)" Caption="Заказчик"></DxDataGridColumn>
+                    <DxDataGridColumn Field="@nameof(Data.AppNumber)" Caption="Номер заявки"></DxDataGridColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.GetTechnicalToWork)" Caption="Дата принятия в работу"></DxDataGridDateEditColumn>
+                    <DxDataGridCheckBoxColumn Field="@nameof(Data.SpToSi)" Caption="СП готово"></DxDataGridCheckBoxColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.ReturnTechnical)" Caption="Отправка ТС" SortOrder="DataGridColumnSortOrder.Ascending" SortIndex="0">
+                        <DisplayTemplate>
+                            @{
+                                var dateTime = DateTime.Today;
+                                var ReturnTechnicalDT = (context as Data).ReturnTechnical;
+                                bool hot = false;
+                                var ss = ReturnTechnicalDT - dateTime;
+                                if (ReturnTechnicalDT < dateTime) hot = true;
+                                else
+                                {
+                                    if ((ReturnTechnicalDT - dateTime) <= TimeSpan.FromDays(2)) hot = true;
+                                    else hot = false;
+                                }
+                                <div style="@(hot ? "background-color: orange!important" : "")">@((context as Data).ReturnTechnical.ToShortDateString())</div>
+                             }
+                        </DisplayTemplate>
+                    </DxDataGridDateEditColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.ReturnOM)" Caption="Отправка ОМ" SortOrder="DataGridColumnSortOrder.Ascending" SortIndex="1">
+                        <DisplayTemplate>
+                            @{
+                                var dateTime = DateTime.Today;
+                                var ReturnOMDT = (context as Data).ReturnOM;
+                                bool hot = false;
+                                var ss = ReturnOMDT - dateTime;
+                                if (ReturnOMDT < dateTime) hot = true;
+                                else
+                                {
+                                    if ((ReturnOMDT - dateTime) <= TimeSpan.FromDays(5)) hot = true;
+                                    else hot = false;
+                                }
+                                <div style="@(hot ? "background-color: orangered!important" : "")">@((context as Data).ReturnOM.ToShortDateString())</div>
+                            }
+                        </DisplayTemplate>
+                    </DxDataGridDateEditColumn>
+                    <DxDataGridCheckBoxColumn Field="@nameof(Data.ReturnPartTechnical)" Caption="Отдали часть техники"></DxDataGridCheckBoxColumn>
+                    <DxDataGridColumn Field="@nameof(Data.Comment)" Caption="Комментарий">
+                        <EditTemplate>
+                            @{
+                                var cellEditContext = (CellEditContext)context;
+                                var comment = (string)cellEditContext.CellValue;
+                                <DxMemo Text="@comment" TextChanged="@((string value) => cellEditContext.OnChanged(value))"></DxMemo>
+                            }
+                        </EditTemplate>
+                    </DxDataGridColumn>
+                </Columns>
+            </DxDataGrid>
+        </div>
+    </DxTabPage>
+    <DxTabPage Text="Будущее">
+        <div>
+            <DxDataGrid Data="DataList.dataListsFuture" PageSize="30" @ref="@_ref"
+                        RowInsertingAsync="onRowInsertingFuture"
+                        RowUpdatingAsync="onRowUpdatingFuture"
+                        RowRemovingAsync="onRowRemovingFuture">
+                <Columns>
+                    <DxDataGridCommandColumn Width="150px"></DxDataGridCommandColumn>
+                    <DxDataGridColumn Field="@nameof(Data.Customer)" Caption="Заказчик"></DxDataGridColumn>
+                    <DxDataGridColumn Field="@nameof(Data.AppNumber)" Caption="Номер заявки"></DxDataGridColumn>
+                    <DxDataGridCheckBoxColumn Field="@nameof(Data.SpToSi)" Caption="В работе СП"></DxDataGridCheckBoxColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.GetTechnicalToWork)" Caption="Дата передачи ТС"></DxDataGridDateEditColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.ReturnTechnical)" Caption="Отправка ТС" SortOrder="DataGridColumnSortOrder.Ascending" SortIndex="0">
+                        <DisplayTemplate>
+                            @{
+                                var dateTime = DateTime.Today;
+                                var ReturnTechnicalDT = (context as Data).ReturnTechnical;
+                                bool hot = false;
+                                var ss = ReturnTechnicalDT - dateTime;
+                                if (ReturnTechnicalDT < dateTime) hot = true;
+                                else
+                                {
+                                    if ((ReturnTechnicalDT - dateTime) <= TimeSpan.FromDays(4)) hot = true;
+                                    else hot = false;
+                                }
+                                <div style="@(hot ? "background-color: orange!important" : "")">@((context as Data).ReturnTechnical.ToShortDateString())</div>
+                            }
+                        </DisplayTemplate>
+                    </DxDataGridDateEditColumn>
+                    <DxDataGridDateEditColumn Field="@nameof(Data.ReturnOM)" Caption="Отправка ОМ" SortOrder="DataGridColumnSortOrder.Ascending" SortIndex="1">
+                        <DisplayTemplate>
+                            @{
+                                var dateTime = DateTime.Today;
+                                var ReturnOMDT = (context as Data).ReturnOM;
+                                bool hot = false;
+                                var ss = ReturnOMDT - dateTime;
+                                if (ReturnOMDT < dateTime) hot = true;
+                                else
+                                {
+                                    if ((ReturnOMDT - dateTime) <= TimeSpan.FromDays(6)) hot = true;
+                                    else hot = false;
+                                }
+                                <div style="@(hot ? "background-color: orangered!important" : "")">@((context as Data).ReturnOM.ToShortDateString())</div>
+                            }
+                        </DisplayTemplate>
+                    </DxDataGridDateEditColumn>
+                    <DxDataGridColumn Field="@nameof(Data.Comment)" Caption="Комментарий">
+                        <EditTemplate>
+                            @{
+                                var cellEditContext = (CellEditContext)context;
+                                var comment = (string)cellEditContext.CellValue;
+                                <DxMemo Text="@comment" TextChanged="@((string value) => cellEditContext.OnChanged(value))"></DxMemo>
+                            }
+                        </EditTemplate>
+                    </DxDataGridColumn>
+                    <DxDataGridColumn EditorVisible="false">
+                        <DisplayTemplate>
+                            @{
+                                var dataItem = context as Data;
+                                <DxButton Text="В работу" Click="@(()=>InWork(dataItem))"></DxButton>
+                            }
+                        </DisplayTemplate>
+                    </DxDataGridColumn>
+                </Columns>
+            </DxDataGrid>
+        </div>
+    </DxTabPage>
+    <DxTabPage Text="Настройка">
+        <div>
+            <DxButton Text="Сохранить таблицу" Click="SaveData"></DxButton>
+            <DxButton Text="Загрузить таблицу" Click="LoadData"></DxButton>
+        </div>
+    </DxTabPage>
+</DxTabs>
+
+
+
+
+@code {
+    private DxDataGrid<Data> _ref;
+    private System.Timers.Timer _saveDataTimer = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _saveDataTimer.Interval = 600000;
+        _saveDataTimer.Elapsed += SaveDataTimerTick;
+        _saveDataTimer.Start();
+    }
+
+    private async Task onRowInserting(IDictionary<string, object> newValue)
+    {
+        try
+        {
+            var dataItem = new Data();
+            dataItem = await AddDataAsync(new Data(), newValue);
+            DataList.dataLists.Insert(0, dataItem);
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{nameof(onRowInserting)} error: {ex.Message}");
+        }
+    }
+
+    private async Task<Data> AddDataAsync(Data dataItem, IDictionary<string, object> newValue)
+    {
+
+        foreach (var field in newValue.Keys)
+        {
+            switch (field)
+            {
+                case nameof(dataItem.Customer):
+                    dataItem.Customer = (string)newValue[field];
+                    break;
+                case nameof(dataItem.AppNumber):
+                    dataItem.AppNumber = (string)newValue[field];
+                    break;
+                case nameof(dataItem.GetTechnicalToWork):
+                    dataItem.GetTechnicalToWork = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.SpToSi):
+                    dataItem.SpToSi = (bool)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnTechnical):
+                    dataItem.ReturnTechnical = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnOM):
+                    dataItem.ReturnOM = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnPartTechnical):
+                    dataItem.ReturnPartTechnical = (bool)newValue[field];
+                    break;
+                case nameof(dataItem.Comment):
+                    dataItem.Comment = (string)newValue[field];
+                    break;
+            }
+        }
+        return dataItem;
+    }
+
+    private async Task onRowUpdating(Data dataItem, IDictionary<string, object> newValue)
+    {
+        try
+        {
+            var index = DataList.dataLists.FindIndex(u => u.SyncId == dataItem.SyncId);
+            dataItem = await AddDataAsync(dataItem, newValue);
+            if (index != -1)
+            {
+                DataList.dataLists[index] = dataItem;
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{nameof(onRowUpdating)} error: {ex.Message}");
+        }
+    }
+
+    private async Task onRowRemoving(Data dataItem)
+    {
+        DataList.dataLists.Remove(dataItem);
+    }
+
+    private async Task onRowInsertingFuture(IDictionary<string, object> newValue)
+    {
+        try
+        {
+            var dataItem = new Data();
+            dataItem = await AddDataAsyncFuture(new Data(), newValue);
+            DataList.dataListsFuture.Insert(0, dataItem);
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{nameof(onRowInsertingFuture)} error: {ex.Message}");
+        }
+    }
+
+    private async Task<Data> AddDataAsyncFuture(Data dataItem, IDictionary<string, object> newValue)
+    {
+
+        foreach (var field in newValue.Keys)
+        {
+            switch (field)
+            {
+                case nameof(dataItem.Customer):
+                    dataItem.Customer = (string)newValue[field];
+                    break;
+                case nameof(dataItem.AppNumber):
+                    dataItem.AppNumber = (string)newValue[field];
+                    break;
+                case nameof(dataItem.GetTechnicalToWork):
+                    dataItem.GetTechnicalToWork = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.SpToSi):
+                    dataItem.SpToSi = (bool)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnTechnical):
+                    dataItem.ReturnTechnical = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnOM):
+                    dataItem.ReturnOM = (DateTime)newValue[field];
+                    break;
+                case nameof(dataItem.ReturnPartTechnical):
+                    dataItem.ReturnPartTechnical = (bool)newValue[field];
+                    break;
+                case nameof(dataItem.Comment):
+                    dataItem.Comment = (string)newValue[field];
+                    break;
+            }
+        }
+        return dataItem;
+    }
+
+    private async Task onRowUpdatingFuture(Data dataItem, IDictionary<string, object> newValue)
+    {
+        try
+        {
+            var index = DataList.dataListsFuture.FindIndex(u => u.SyncId == dataItem.SyncId);
+            dataItem = await AddDataAsyncFuture(dataItem, newValue);
+            if (index != -1)
+            {
+                DataList.dataListsFuture[index] = dataItem;
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{nameof(onRowUpdatingFuture)} error: {ex.Message}");
+        }
+    }
+
+    private async Task onRowRemovingFuture(Data dataItem)
+    {
+        DataList.dataListsFuture.Remove(dataItem);
+    }
+
+    private async Task InWork(Data dataItem)
+    {
+        DataList.dataListsFuture.Remove(dataItem);
+        dataItem.GetTechnicalToWork = DateTime.Today;
+        dataItem.SpToSi = true;
+        DataList.dataLists.Insert(0, dataItem);
+        await _ref.Refresh();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void SaveDataTimerTick(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        try
+        {
+            await SaveData();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{nameof(SaveDataTimerTick)} error: {ex.Message}");
+        }
+    }
+
+    private async Task SaveData()
+    {
+        var dataListsPath = Startup.Path + "/DataLists.txt";
+        var dataListsFuturePath = Startup.Path + "/DataListsFuture.txt";
+
+        var dataListsJson = JsonSerializer.Serialize(DataList.dataLists);
+        var dataListsFutureJson = JsonSerializer.Serialize(DataList.dataListsFuture);
+
+        File.WriteAllText(dataListsPath, dataListsJson);
+        File.WriteAllText(dataListsFuturePath, dataListsFutureJson);
+    }
+
+    private async Task LoadData()
+    {
+        var dataListsPath = Startup.Path + "/DataLists.txt";
+        var dataListsFuturePath = Startup.Path + "/DataListsFuture.txt";
+
+        var dataListsJson = string.Empty;
+        var dataListsFutureJson = string.Empty;
+        try
+        {
+            dataListsJson = File.ReadAllText(dataListsPath);
+        }
+        catch (Exception ex)
+        {
+            dataListsJson = string.Empty;
+        }
+        try
+        {
+            dataListsFutureJson = File.ReadAllText(dataListsFuturePath);
+        }
+        catch (Exception ex)
+        {
+            dataListsFutureJson = string.Empty;
+        }
+
+        if (!string.IsNullOrEmpty(dataListsJson)) DataList.dataLists = JsonSerializer.Deserialize<List<Data>>(dataListsJson);
+        if (!string.IsNullOrEmpty(dataListsFutureJson)) DataList.dataListsFuture = JsonSerializer.Deserialize<List<Data>>(dataListsFutureJson);
+
+        await _ref.Refresh();
+        await InvokeAsync(StateHasChanged);
+    }
+}

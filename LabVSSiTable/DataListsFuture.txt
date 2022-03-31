@@ -1,0 +1,1 @@
+[{"SyncId":"b84ec9e1-e287-4d8c-8435-ef4ece68d780","Customer":"req","AppNumber":"r23","GetTechnicalToWork":"2021-08-13T09:18:07.677995+03:00","SpToSi":false,"ReturnTechnical":"2021-08-13T09:18:07.677995+03:00","ReturnOM":"2021-08-13T09:18:07.677996+03:00","ReturnPartTechnical":false,"Comment":""}]

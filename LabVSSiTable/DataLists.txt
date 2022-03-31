@@ -1,0 +1,1 @@
+[{"SyncId":"05b2aeac-879f-4138-8b60-7bb2625873a1","Customer":"4234","AppNumber":"ferwf","GetTechnicalToWork":"2021-08-13T09:17:50.210101+03:00","SpToSi":false,"ReturnTechnical":"2021-08-13T09:17:50.210101+03:00","ReturnOM":"2021-08-13T09:17:50.210101+03:00","ReturnPartTechnical":false,"Comment":""}]

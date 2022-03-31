@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabVSSiTable", "LabVSSiTable.csproj", "{50B9BC1A-E95F-43B6-922E-2471A4F5598F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{50B9BC1A-E95F-43B6-922E-2471A4F5598F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50B9BC1A-E95F-43B6-922E-2471A4F5598F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50B9BC1A-E95F-43B6-922E-2471A4F5598F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50B9BC1A-E95F-43B6-922E-2471A4F5598F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCD1456B-D355-4826-AA26-91C2E1377A45}
+	EndGlobalSection
+EndGlobal
